@@ -23,7 +23,7 @@ const ImageUpload = () => {
     },
     onError: (err) => {
       console.error("Upload failed:", err);
-      alert("Failed to upload images. Please try again.");
+      // alert("Failed to upload images. Please try again.");
     },
   });
 
