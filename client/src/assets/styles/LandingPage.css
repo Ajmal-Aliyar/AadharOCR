@@ -1,0 +1,21 @@
+/* .landing-page{ */
+/* } */
+
+.landing-body {
+    display: flex;
+    gap: 50px;
+    padding-top: 8px;
+    /* background-color: slategrey; */
+}
+
+.landing-header {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.aadhaar-logo {
+    width: 65px;
+    height: 40px;
+}
