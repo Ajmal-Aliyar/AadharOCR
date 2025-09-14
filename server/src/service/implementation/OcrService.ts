@@ -50,7 +50,10 @@ export default class OcrService implements IOcrService {
 
   async extractTextUsingGoogleVision(imagePath: string): Promise<string> {
     try {
+      console.log("Google credentials path:", process.env.GOOGLE_APPLICATION_CREDENTIALS);
       const [result] = await this.client.textDetection(imagePath);
+      console.log('result', result);
+      
       return result.fullTextAnnotation?.text || "";
     } catch (error) {
       console.error(error);

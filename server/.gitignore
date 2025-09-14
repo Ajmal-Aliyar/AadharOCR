@@ -5,3 +5,4 @@ dist
 src/uploads
 service.account.json
 .env.production
+src/config/aadhar-ocr.json

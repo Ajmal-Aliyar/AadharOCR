@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api=axios.create({
-    baseURL:`https://aadhar-ocr-in91-backend.vercel.app/api`,
+    baseURL:`${import.meta.env.VITE_API}/api`,
     withCredentials:true,
     timeout:20000,
 })
