@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { createWorker } from "tesseract.js";
 import path from "path";
-import extractAadhaarDetails from "../../utils/extractAadhaarDetails";
 import { inject, injectable } from "tsyringe";
 import { IOcrController } from "../interface/IOcrController";
 import { IOcrService } from "../../service/interface/IOcrService";
@@ -11,16 +10,17 @@ import {
   HttpResMsg,
 } from "../../constants/http-response.constants";
 import CustomError from "../../errors/CustomError";
+import { ROUTES } from "../../constants/Routes";
 
 @injectable()
 export default class OcrController implements IOcrController {
-  private ocrService: IOcrService;
+  private _ocrService: IOcrService;
 
   constructor(
     @inject("OcrService")
     ocrService: IOcrService
   ) {
-    this.ocrService = ocrService;
+    this._ocrService = ocrService;
   }
 
   async extractAadhaarDetails(
@@ -42,20 +42,21 @@ export default class OcrController implements IOcrController {
 
       const aadhaarFrontPath = path.join(
         __dirname,
-        "../../../uploads",
+        ROUTES.UPLOAD,
         files.aadhaarFront[0].filename
       );
 
       const aadhaarBackPath = path.join(
         __dirname,
-        "../../../uploads",
+        ROUTES.UPLOAD,
         files.aadhaarBack[0].filename
       );
 
-      const result = await this.ocrService.processAadhaar(
+      const result = await this._ocrService.processAadhaar(
         aadhaarFrontPath,
         aadhaarBackPath
       );
+
       res.status(200).json({
         message: HttpResMsg.IMAGE_UPLOADED_SUCCESSFULLY,
         result,
@@ -72,32 +73,3 @@ export default class OcrController implements IOcrController {
   }
 }
 
-// const worker = await createWorker("eng");
-
-// try {
-//   const {
-//     data: { text: frontText },
-//   } = await worker.recognize(aadhaarFrontPath);
-//   const {
-//     data: { text: backText },
-//   } = await worker.recognize(aadhaarBackPath);
-//   console.log("🚀 ~ uploadImages ~ frontText:", frontText);
-//   console.log("🚀 ~ uploadImages ~ backText:", backText);
-
-//   await worker.terminate();
-
-//   const extractedAadhaarData = extractAadhaarDetails(frontText, backText);
-//   console.log(
-//     "🚀 ~ uploadImages ~ extractedAadhaarData:",
-//     extractedAadhaarData
-//   );
-
-//   res.status(200).json({
-//     message: "Images uploaded and parsed successfully",
-//   });
-// } catch (err) {
-//   // await worker.terminate();
-//   res
-//     .status(500)
-//     .json({ message: "Error during OCR processing", error: err });
-// }

@@ -17,30 +17,29 @@ function extractAadhaarDetails(
     isUIDsame: false,
   };
 
-  // UID
-  const uidFrontMatch = frontText.match(/\d{4}\s?\d{4}\s?\d{4}/);
-  const uidBackMatch = backText.match(/\d{4}\s?\d{4}\s?\d{4}/);
-  result.UID = uidFrontMatch ? uidFrontMatch[0].replace(/\s/g, "") : null;
-  result.isUIDsame =
-    result.UID !== null && uidBackMatch !== null
-      ? result.UID === uidBackMatch[0].replace(/\s/g, "")
-      : false;
+  const uidFrontMatch = frontText.match(/\d+/g);
+  const uidBackMatch = backText.match(/\d+/g);
 
-  // Name
+  console.log(uidFrontMatch, uidBackMatch, "uuird");
+
+  const frontUID = uidFrontMatch ? uidFrontMatch.join("").slice(-12) : null;
+  const backUID = uidBackMatch ? uidBackMatch.join("").slice(-12) : null;
+
+  result.UID = frontUID;
+  result.isUIDsame =
+    frontUID !== null && backUID !== null ? frontUID === backUID : false;
+
   const nameMatch = frontText.match(/Name\s*[:\-]?\s*([A-Z\s]+)/i);
   result.name = nameMatch ? nameMatch[1].trim() : null;
 
-  // DOB
   const dobMatch = frontText.match(
     /DOB\s*[:\-]?\s*(\d{4}[-\/]\d{2}[-\/]\d{2}|\d{2}[-\/]\d{2}[-\/]\d{4})/i
   );
   result.dob = dobMatch ? dobMatch[1] : null;
 
-  // Gender
   const genderMatch = frontText.match(/(Male|Female|Transgender)/i);
   result.gender = genderMatch ? genderMatch[1] : null;
 
-  // Address
   const addressMatch = backText.match(
     /address[:\-]?\s*([\s\S]+?)(Uttar Pradesh|[A-Z]{2,} - \d{6})/i
   );
@@ -48,11 +47,9 @@ function extractAadhaarDetails(
     ? addressMatch[1].replace(/\n/g, " ").trim()
     : null;
 
-  // Pincode
   const pincodeMatch = backText.match(/\d{6}/g);
   result.pincode = pincodeMatch ? pincodeMatch[pincodeMatch.length - 1] : null;
 
-  // Age band calculation
   if (result.dob) {
     const birthYearMatch = result.dob.match(/\d{4}/);
     if (birthYearMatch) {

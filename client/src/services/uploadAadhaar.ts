@@ -14,7 +14,7 @@ const uploadAadhaarImages = async (data: {
     },
   });
 
-  return response.data;
+  return response.data.result;
 };
 
 export default uploadAadhaarImages

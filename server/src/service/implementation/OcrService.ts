@@ -2,9 +2,9 @@ import { HttpResCode, HttpResMsg } from "../../constants/http-response.constants
 import CustomError from "../../errors/CustomError";
 import fs from "fs/promises";
 import { IOcrService } from "../interface/IOcrService";
-import vision from "@google-cloud/vision";
 import extractAadhaarDetails from "../../utils/extractAadhaarDetails";
 import { AadhaarDetails } from "../../types/aadhaarData";
+import Tesseract from "tesseract.js";
 
 export default class OcrService implements IOcrService {
   async processAadhaar(
@@ -12,15 +12,12 @@ export default class OcrService implements IOcrService {
     backPath: string
   ): Promise<AadhaarDetails> {
     try {
-      console.log("1, before google vision");
       const [frontText, backText] = await Promise.all([
-        this.extractTextUsingGoogleVision(frontPath),
-        this.extractTextUsingGoogleVision(backPath),
+        this.extractTextUsingTesseract(frontPath),
+        this.extractTextUsingTesseract(backPath),
       ]);
-      console.log("2, after google vision");
 
       const parsedData = extractAadhaarDetails(frontText, backText);
-      console.log("🚀 ~ OcrService ~ processAadhaar ~ parsedData:", parsedData);
 
       if (!parsedData.isUIDsame) {
         throw new CustomError(
@@ -48,16 +45,13 @@ export default class OcrService implements IOcrService {
     }
   }
 
-  async extractTextUsingGoogleVision(imagePath: string): Promise<string> {
+  async extractTextUsingTesseract(imagePath: string): Promise<string> {
     try {
-      const [result] = await this.client.textDetection(imagePath);
-      return result.fullTextAnnotation?.text || "";
+      const { data } = await Tesseract.recognize(imagePath, "eng");
+      return data.text || "";
     } catch (error) {
-      console.error(error);
+      console.error("Tesseract OCR error:", error);
       return "";
     }
   }
-
-  private client = new vision.ImageAnnotatorClient();
-
 }

@@ -4,6 +4,7 @@ import imageIcon from "../assets/images/upload_image.png";
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import uploadAadhaarImages from "../services/uploadAadhaar";
+import { useAadhaar } from "../context/AadharContext";
 
 const ImageUpload = () => {
   const AADHAAR_FRONT_REF = useRef<HTMLInputElement>(null);
@@ -15,17 +16,18 @@ const ImageUpload = () => {
   const [aadhaarFrontPreview, setAadhaarFrontPreview] = useState("");
   const [aadhaarBackPreview, setAadhaarBackPreview] = useState("");
 
+  const { setDetails } = useAadhaar();
+
   const uploadAadhaarImagesMutation = useMutation({
-    mutationFn: uploadAadhaarImages,
-    onSuccess: (data) => {
-      console.log("Upload successful!", data);
-      alert("Aadhaar images uploaded successfully!");
-    },
-    onError: (err) => {
-      console.error("Upload failed:", err);
-      // alert("Failed to upload images. Please try again.");
-    },
-  });
+  mutationFn: uploadAadhaarImages,
+  onSuccess: (data) => {
+    console.log("Upload successful!", data);
+    setDetails(data); 
+  },
+  onError: (err) => {
+    console.error("Upload failed:", err);
+  },
+});
 
   const frontImageClick = () => {
     AADHAAR_FRONT_REF.current?.click();
