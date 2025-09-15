@@ -37,6 +37,36 @@ const env = {
     }
     return process.env.GOOGLE_APPLICATION_CREDENTIALS;
   },
+
+  get CLOUDINARY_CLOUD_NAME() {
+    if (!process.env.CLOUDINARY_CLOUD_NAME) {
+      throw new CustomError(
+        EnvErrMsg.CLOUDINARY_CLOUD_NAME_UNDEFINED,
+        HttpResCode.INTERNAL_SERVER_ERROR
+      );
+    }
+    return process.env.CLOUDINARY_CLOUD_NAME;
+  },
+
+  get CLOUDINARY_API_KEY() {
+    if (!process.env.CLOUDINARY_API_KEY) {
+      throw new CustomError(
+        EnvErrMsg.CLOUDINARY_API_KEY_UNDEFINED,
+        HttpResCode.INTERNAL_SERVER_ERROR
+      );
+    }
+    return process.env.CLOUDINARY_API_KEY;
+  },
+
+  get CLOUDINARY_API_SECRET() {
+    if (!process.env.CLOUDINARY_API_SECRET) {
+      throw new CustomError(
+        EnvErrMsg.CLOUDINARY_API_SECRET_UNDEFINED,
+        HttpResCode.INTERNAL_SERVER_ERROR
+      );
+    }
+    return process.env.CLOUDINARY_API_SECRET;
+  },
 };
 
 export default env;
