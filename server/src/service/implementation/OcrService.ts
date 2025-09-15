@@ -1,57 +1,40 @@
-import { HttpResCode, HttpResMsg } from "../../constants/http-response.constants";
-import CustomError from "../../errors/CustomError";
-import fs from "fs/promises";
-import { IOcrService } from "../interface/IOcrService";
-import extractAadhaarDetails from "../../utils/extractAadhaarDetails";
-import { AadhaarDetails } from "../../types/aadhaarData";
-import Tesseract from "tesseract.js";
+import { HttpResCode, HttpResMsg } from "@constants/http-response.constants";
+import { TYPES } from "@constants/tssyringe-types";
+import CustomError from "@errors/CustomError";
+import { IOcrEngine, IOcrService } from "@services/interface";
+import extractAadhaarDetails from "@utils/extractAadhaarDetails";
+import { FileManager } from "@utils/FileManager";
+import { injectable, inject } from "tsyringe";
+import { AadhaarDetails } from "types";
 
-export default class OcrService implements IOcrService {
-  async processAadhaar(
-    frontPath: string,
-    backPath: string
-  ): Promise<AadhaarDetails> {
+
+@injectable()
+export class OcrService implements IOcrService {
+  constructor(
+    @inject(TYPES.OcrEngine) private _ocrEngine: IOcrEngine,
+    @inject(FileManager) private _fileManager: FileManager
+  ) {}
+
+  async processAadhaar(frontPath: string, backPath: string): Promise<AadhaarDetails> {
     try {
       const [frontText, backText] = await Promise.all([
-        this.extractTextUsingTesseract(frontPath),
-        this.extractTextUsingTesseract(backPath),
+        this._ocrEngine.recognize(frontPath),
+        this._ocrEngine.recognize(backPath),
       ]);
 
       const parsedData = extractAadhaarDetails(frontText, backText);
 
       if (!parsedData.isUIDsame) {
-        throw new CustomError(
-          HttpResMsg.UID_IS_NOT_SAME,
-          HttpResCode.BAD_REQUEST
-        );
+        throw new CustomError(HttpResMsg.UID_IS_NOT_SAME, HttpResCode.BAD_REQUEST);
       }
 
       return parsedData;
     } catch (error) {
       console.error(HttpResMsg.FAILED_TO_EXTRACT_DETAILS);
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw new CustomError(
-        HttpResMsg.FAILED_TO_EXTRACT_DETAILS,
-        HttpResCode.INTERNAL_SERVER_ERROR
-      );
+      if (error instanceof CustomError) throw error;
+      throw new CustomError(HttpResMsg.FAILED_TO_EXTRACT_DETAILS, HttpResCode.INTERNAL_SERVER_ERROR);
     } finally {
-      try {
-        await Promise.all([fs.unlink(frontPath), fs.unlink(backPath)]);
-      } catch (err) {
-        console.warn(HttpResMsg.FAILED_TO_REMOVE_FILES, err);
-      }
-    }
-  }
-
-  async extractTextUsingTesseract(imagePath: string): Promise<string> {
-    try {
-      const { data } = await Tesseract.recognize(imagePath, "eng");
-      return data.text || "";
-    } catch (error) {
-      console.error("Tesseract OCR error:", error);
-      return "";
+      await this._fileManager.removeFiles([frontPath, backPath]);
     }
   }
 }

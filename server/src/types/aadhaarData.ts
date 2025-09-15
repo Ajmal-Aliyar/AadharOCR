@@ -5,7 +5,7 @@ export interface AadhaarDetails {
   UID: string | null;
   address: string | null;
   pincode: string | null;
-  ageBand?: string;
+  ageBand: string | null;
   isUIDsame: boolean;
 }
 

@@ -4,7 +4,7 @@ import cloudinary from "./cloudinary.config";
 
 const storage = new CloudinaryStorage({
   cloudinary,
-  params: async (req, file) => {
+  params: async (_req, file) => {
     return {
       folder: "aadhaar_uploads",
       format: file.mimetype.split("/")[1], 
