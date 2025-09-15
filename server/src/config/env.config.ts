@@ -2,7 +2,7 @@ import CustomError from "../errors/CustomError";
 import { EnvErrMsg } from "../constants/env-error-messages.constants";
 import { HttpResCode } from "../constants/http-response.constants";
 
-const env = {
+export const env = {
   get PORT(): number {
     const port = process.env.PORT;
     if (!port) {
@@ -68,5 +68,3 @@ const env = {
     return process.env.CLOUDINARY_API_SECRET;
   },
 };
-
-export default env;

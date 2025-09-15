@@ -1,9 +1,15 @@
+import { TYPES } from "@constants/tssyringe-types";
+import OcrController from "@controllers/implementation/OcrController";
+import { IOcrController } from "@controllers/interface";
+import { OcrService } from "@services/implementation/OcrService";
+import { TesseractEngine } from "@services/implementation/TesseractService";
+import { IOcrEngine, IOcrService } from "@services/interface";
+import { FileManager } from "@utils/FileManager";
 import "reflect-metadata";
 import { container } from "tsyringe";
-import { IOcrController } from "../controllers/interface/IOcrController";
-import { IOcrService } from "../service/interface/IOcrService";
-import OcrController from "../controllers/implementation/OcrController";
-import OcrService from "../service/implementation/OcrService";
 
-container.register<IOcrController>('OcrController',{useClass:OcrController})
-container.register<IOcrService>('OcrService',{useClass:OcrService})
+
+container.registerSingleton<IOcrEngine>(TYPES.OcrEngine, TesseractEngine);
+container.registerSingleton(FileManager, FileManager);
+container.registerSingleton<IOcrService>(TYPES.OcrService, OcrService);
+container.registerSingleton<IOcrController>(TYPES.OcrController, OcrController);

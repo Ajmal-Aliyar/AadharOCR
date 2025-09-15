@@ -124,8 +124,6 @@ export const enum HttpResMsg {
   NOT_EXTENDED = "Not extended",
   NETWORK_AUTHENTICATION_REQUIRED = "Network authentication required",
 
-  //Other responses
-
   SERVER_CONNECTION = `Server connection   ✅`,
   ROUTE_NOT_FOUND = `Server End Point Not Found`,
   SOMETHING_WENT_WRONG = "Something went wrong.",
