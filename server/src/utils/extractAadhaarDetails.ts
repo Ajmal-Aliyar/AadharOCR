@@ -29,8 +29,14 @@ function extractAadhaarDetails(
   result.isUIDsame =
     frontUID !== null && backUID !== null ? frontUID === backUID : false;
 
-  const nameMatch = frontText.match(/Name\s*[:\-]?\s*([A-Z\s]+)/i);
-  result.name = nameMatch ? nameMatch[1].trim() : null;
+const lines = frontText.split(/\n|\r/).map(line => line.trim()).filter(Boolean);
+
+let dobIndex = lines.findIndex(line => /DOB/i.test(line));
+if (dobIndex > 0) {
+  result.name = lines[dobIndex - 1]; 
+} else {
+  result.name = null;
+}
 
   const dobMatch = frontText.match(
     /DOB\s*[:\-]?\s*(\d{4}[-\/]\d{2}[-\/]\d{2}|\d{2}[-\/]\d{2}[-\/]\d{4})/i
