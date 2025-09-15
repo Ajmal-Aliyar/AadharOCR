@@ -3,10 +3,10 @@ dotenv.config();
 import "reflect-metadata";
 import cors from "cors";
 import express from "express";
-import aadhaarRoutes from "../src/routes/aadhaarRoutes";
 import CustomError from "./errors/CustomError";
 import { HttpResCode, HttpResMsg } from "./constants/http-response.constants";
 import errorHandler from "./middlewares/error-handler.middleware";
+import aadhaarRoutes from "./routes/aadhaarRoutes"
 
 const app = express();
 const PORT = process.env.PORT;
