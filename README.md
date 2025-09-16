@@ -1,4 +1,4 @@
-# Aadhaar OCR System (MERN Stack)
+# Aadhaar OCR System (MERN Stack) - Service Layer Architecture
 
 This project is a MERN (MongoDB, Express.js, React.js, Node.js) stack web application that performs **OCR (Optical Character Recognition)** on Aadhaar cards.  
 Users can upload the **front and back images** of an Aadhaar card, and the system extracts and displays the relevant information using OCR.
@@ -43,3 +43,4 @@ Users can upload the **front and back images** of an Aadhaar card, and the syste
 │   └── package.json
 ├── README.md
 └── package.json
+
